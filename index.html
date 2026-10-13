@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f3">
+  <title>JIFC | Protótipos do campeonato</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17211d;
+      --muted: #5d6963;
+      --line: #d8dfda;
+      --paper: #f4f6f3;
+      --white: #fff;
+      --green: #147a55;
+      --lime: #d7f36b;
+      --red: #c13c32;
+      --yellow: #f3c84b;
+      --blue: #2565a5;
+      --focus: #075fcc;
+      font-family: "DM Sans", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); }
+    button, input, select { font: inherit; }
+    button, select, input { min-height: 44px; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .skip { position: absolute; left: 12px; top: -60px; z-index: 30; padding: 12px; background: white; color: #111; }
+    .skip:focus { top: 12px; }
+    .prototype-bar { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 66px; padding: 10px clamp(16px, 4vw, 60px); background: #15251e; color: #fff; }
+    .prototype-brand { display: flex; align-items: center; gap: 11px; font-size: 13px; font-weight: 700; }
+    .prototype-brand small { display: block; color: #bac8bf; font-size: 11px; font-weight: 500; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; background: var(--lime); color: #17211d; font-family: "Barlow Condensed", sans-serif; font-size: 20px; font-weight: 800; }
+    .prototype-tabs { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px; background: #263a30; }
+    .prototype-tabs button { padding: 8px 13px; border: 1px solid transparent; background: transparent; color: #dbe5df; font-size: 12px; font-weight: 700; }
+    .prototype-tabs button[aria-selected="true"] { background: var(--lime); color: #17211d; }
+    .prototype-tabs button:hover { border-color: #91a69a; }
+    .source-note { padding: 10px clamp(16px, 4vw, 60px); border-bottom: 1px solid #e3e7e3; background: #fff; color: #4e5b53; font-size: 12px; }
+    .source-note strong { color: #17211d; }
+    main { max-width: 1440px; margin: auto; padding: 0 clamp(16px, 4vw, 58px) 50px; }
+    .proto { display: none; }
+    .proto.active { display: block; animation: reveal .3s ease-out; }
+    @keyframes reveal { from { opacity: .3; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .wordmark { font-family: "Barlow Condensed", sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 0; }
+    .wordmark span { color: var(--green); }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+    .icon-button, .outline-button { border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 7px 13px; font-size: 12px; font-weight: 700; }
+    .solid-button { border: 1px solid var(--ink); background: var(--ink); color: white; padding: 7px 14px; font-size: 12px; font-weight: 700; }
+    .solid-button:hover { background: var(--green); border-color: var(--green); }
+    .page-title { margin: 26px 0 18px; font-size: 27px; line-height: 1.15; letter-spacing: 0; }
+    .eyebrow { color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 19px 0; }
+    .filters label { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .filters select, .filters input { min-width: 145px; border: 1px solid var(--line); border-radius: 0; padding: 7px 10px; background: white; color: var(--ink); font-size: 12px; }
+    .filters input { min-width: 190px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .stat { min-height: 88px; padding: 15px 18px 14px 0; border-right: 1px solid var(--line); }
+    .stat + .stat { padding-left: 18px; }
+    .stat:last-child { border-right: 0; }
+    .stat strong { display: block; font-family: "Barlow Condensed", sans-serif; font-size: 31px; line-height: 1; }
+    .stat span { display: block; margin-top: 7px; color: var(--muted); font-size: 11px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 28px 0 11px; }
+    .section-heading h2 { margin: 0; font-size: 17px; }
+    .section-heading a { color: var(--green); font-size: 12px; font-weight: 700; }
+    .schedule { border-top: 2px solid var(--ink); }
+    .match-row { display: grid; grid-template-columns: 80px minmax(160px, 1.5fr) minmax(100px, .65fr) minmax(125px, .8fr) auto; align-items: center; gap: 15px; min-height: 75px; border-bottom: 1px solid var(--line); }
+    .match-row[hidden] { display: none; }
+    .match-time { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; }
+    .match-teams { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+    .match-teams .versus { color: #859089; font-size: 10px; font-weight: 500; }
+    .match-score { font-family: "Barlow Condensed", sans-serif; font-size: 24px; font-weight: 700; white-space: nowrap; }
+    .sport-label { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; }
+    .sport-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+    .sport-dot.basket { background: var(--red); }
+    .sport-dot.volley { background: var(--yellow); }
+    .sport-dot.table { background: var(--blue); }
+    .status { display: inline-flex; align-items: center; gap: 6px; width: max-content; padding: 4px 7px; border: 1px solid #cad8cf; background: #edf6ef; color: #185d38; font-size: 10px; font-weight: 700; }
+    .status::before { content: ""; width: 7px; height: 7px; background: currentColor; border-radius: 50%; }
+    .status.live { border-color: #e3b2ab; background: #fff1ee; color: #982a22; }
+    .status.pending { border-color: #dfc976; background: #fff9dd; color: #735706; }
+    .row-action { border: 0; background: transparent; color: var(--green); font-size: 11px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .board-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(260px, .8fr); gap: 34px; }
+    .side-list { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+    .side-list li { display: flex; justify-content: space-between; gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+    .side-list small { display: block; margin-top: 4px; color: var(--muted); }
+    .inline-notice { min-height: 20px; margin-top: 9px; color: var(--green); font-size: 12px; }
+    .empty-message { padding: 22px 0; color: var(--muted); font-size: 13px; }
+
+    /* Prototype 2: campus festival, organized by venue and time. */
+    .festival { --ink: #182326; --muted: #526268; --line: #d1dcdc; --paper: #f1f6f5; --green: #176c68; font-family: Manrope, sans-serif; }
+    .festival .topline { border-bottom: 3px solid var(--ink); }
+    .festival .wordmark { font-family: Manrope, sans-serif; font-size: 18px; font-weight: 800; }
+    .festival .wordmark span { color: var(--red); }
+    .festival .intro { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(250px, .75fr); gap: 22px; align-items: stretch; margin: 25px 0 19px; }
+    .festival .intro-copy { padding: 4px 0; }
+    .festival .page-title { margin: 8px 0; font-size: 32px; }
+    .festival .intro-image { min-height: 150px; background: linear-gradient(90deg, #15231c35, #15231c05), url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=900&q=85") center 55% / cover; }
+    .festival .festival-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 14px; background: #183d3b; color: #fff; }
+    .festival .festival-bar strong { color: #c4ed79; font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+    .festival .festival-bar span { font-size: 12px; }
+    .festival .stats { grid-template-columns: repeat(4, 1fr); border: 0; gap: 8px; margin: 15px 0 22px; }
+    .festival .stat { min-height: 76px; padding: 13px 14px; border: 0; background: #fff; }
+    .festival .stat:nth-child(2) { border-top: 4px solid #ef755e; }
+    .festival .stat:nth-child(3) { border-top: 4px solid #e8bd38; }
+    .festival .stat:nth-child(4) { border-top: 4px solid #4c8eb8; }
+    .festival .stat:first-child { border-top: 4px solid #38836f; }
+    .festival .stat strong { font-family: Manrope, sans-serif; font-size: 25px; }
+    .festival .venue-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); }
+    .festival .venue { padding: 14px 15px 18px 0; }
+    .festival .venue + .venue { padding-left: 15px; border-left: 1px solid var(--line); }
+    .festival .venue h3 { display: flex; align-items: center; justify-content: space-between; margin: 0 0 12px; font-size: 13px; }
+    .festival .venue h3 span { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 10px; font-weight: 500; }
+    .festival .festival-event { padding: 11px 10px; margin-bottom: 8px; border-left: 4px solid #38836f; background: #fff; }
+    .festival .festival-event:nth-of-type(2) { border-color: #e8bd38; }
+    .festival .festival-event:nth-of-type(3) { border-color: #ef755e; }
+    .festival .festival-event[hidden] { display: none; }
+    .festival .festival-event time { display: block; margin-bottom: 5px; color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 10px; }
+    .festival .festival-event strong { display: block; font-size: 12px; }
+    .festival .festival-event p { margin: 4px 0 7px; color: var(--muted); font-size: 10px; }
+    .festival .festival-event button { min-height: 34px; border: 0; background: transparent; padding: 2px; color: var(--green); font-size: 10px; font-weight: 800; text-decoration: underline; }
+    .festival .status { border-radius: 0; }
+
+    /* Prototype 3: editorial bulletin and official results. */
+    .bulletin { --ink: #192d42; --muted: #546273; --line: #d2d7dc; --paper: #f5f4f0; --green: #176348; --red: #c34a3d; font-family: "DM Sans", sans-serif; }
+    .bulletin .topline { border-bottom: 3px solid var(--ink); }
+    .bulletin .wordmark { font-family: "Roboto Slab", serif; font-size: 18px; }
+    .bulletin .wordmark span { color: var(--red); }
+    .bulletin .masthead { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(250px, .65fr); gap: 28px; padding: 27px 0 21px; border-bottom: 1px solid var(--line); }
+    .bulletin .masthead h1 { max-width: 700px; margin: 5px 0 9px; font-family: "Roboto Slab", serif; font-size: 34px; line-height: 1.14; }
+    .bulletin .masthead p { max-width: 580px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .bulletin .mast-image { min-height: 156px; background: url("https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=900&q=85") center / cover; }
+    .bulletin .bulletin-strip { display: flex; align-items: center; gap: 15px; margin: 15px 0 23px; padding: 10px 12px; background: #192d42; color: #fff; }
+    .bulletin .bulletin-strip strong { color: #ffd55b; font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+    .bulletin .bulletin-strip span { font-size: 11px; }
+    .bulletin .board-layout { grid-template-columns: minmax(0, 1.3fr) minmax(280px, .8fr); gap: 34px; }
+    .bulletin .stats { grid-template-columns: repeat(3, 1fr); margin-bottom: 20px; }
+    .bulletin .stat { min-height: 70px; padding: 11px 12px 9px 0; }
+    .bulletin .stat + .stat { padding-left: 12px; }
+    .bulletin .stat strong { font-family: "Roboto Slab", serif; font-size: 25px; }
+    .bulletin .section-heading h2 { font-family: "Roboto Slab", serif; font-size: 18px; }
+    .bulletin .match-row { grid-template-columns: 60px minmax(115px, 1fr) 50px auto; gap: 9px; min-height: 70px; }
+    .bulletin .match-row .sport-label { display: none; }
+    .bulletin .match-score { font-family: "Roboto Slab", serif; font-size: 20px; }
+    .bulletin .match-teams { flex-wrap: wrap; gap: 6px; font-size: 11px; }
+    .bulletin .side-list { border-top: 2px solid var(--red); }
+    .bulletin .rank { display: inline-block; min-width: 22px; color: var(--red); font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+
+    dialog { width: min(430px, calc(100% - 28px)); border: 1px solid #8a9990; padding: 23px; color: var(--ink); }
+    dialog::backdrop { background: #111a17a8; }
+    dialog h2 { margin: 0 0 8px; font-size: 21px; }
+    dialog p { color: var(--muted); font-size: 13px; }
+    .score-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    .score-fields label { display: grid; gap: 7px; font-size: 12px; font-weight: 700; }
+    .score-fields input { width: 100%; border: 1px solid var(--line); padding: 8px; font-family: "IBM Plex Mono", monospace; font-size: 19px; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .dialog-actions button { padding: 7px 14px; }
+    .no-results { display: none; padding: 16px 0; color: var(--muted); font-size: 12px; }
+    .no-results.show { display: block; }
+    footer { max-width: 1440px; margin: auto; padding: 17px clamp(16px, 4vw, 58px) 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+
+    @media (max-width: 840px) {
+      .board-layout, .festival .intro, .bulletin .masthead { grid-template-columns: 1fr; }
+      .festival .intro-image { min-height: 135px; }
+      .bulletin .mast-image { min-height: 135px; }
+      .festival .venue-grid { grid-template-columns: 1fr; }
+      .festival .venue, .festival .venue + .venue { padding: 12px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+      .festival .venue:last-child { border-bottom: 0; }
+      .board-layout { gap: 18px; }
+    }
+    @media (max-width: 620px) {
+      .prototype-bar { align-items: flex-start; flex-direction: column; gap: 10px; padding-top: 12px; padding-bottom: 12px; }
+      .prototype-tabs { width: 100%; }
+      .prototype-tabs button { flex: 1; padding: 8px 5px; font-size: 10px; }
+      .topline { align-items: flex-start; flex-direction: column; }
+      .top-actions { width: 100%; }
+      .top-actions button { flex: 1; }
+      .page-title { font-size: 24px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(2) { border-right: 0; }
+      .stat:nth-child(3) { padding-left: 0; border-top: 1px solid var(--line); }
+      .stat:nth-child(4) { border-top: 1px solid var(--line); }
+      .filters label { width: 100%; justify-content: space-between; }
+      .filters select, .filters input { flex: 1; }
+      .match-row { grid-template-columns: 52px minmax(0, 1fr) auto; gap: 8px; padding: 10px 0; }
+      .match-row .sport-label { grid-column: 2; grid-row: 2; }
+      .match-row .status { grid-column: 3; grid-row: 1; }
+      .match-row .row-action { grid-column: 3; grid-row: 2; }
+      .match-teams { flex-wrap: wrap; gap: 5px; font-size: 11px; }
+      .match-score { grid-column: 2; grid-row: 3; font-size: 20px; }
+      .bulletin .match-row { grid-template-columns: 48px minmax(0, 1fr) auto; }
+      .bulletin .match-row .status { grid-column: 3; }
+      .bulletin .match-row .row-action { grid-column: 3; }
+      .festival .stats { grid-template-columns: repeat(2, 1fr); }
+      .festival .festival-bar { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .bulletin .masthead h1 { font-size: 29px; }
+      .bulletin .bulletin-strip { align-items: flex-start; flex-direction: column; gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+  <header class="prototype-bar">
+    <div class="prototype-brand"><span class="brand-mark" aria-hidden="true">J</span><span>JIFC · PROTÓTIPOS<small>Três direções para o painel do campeonato</small></span></div>
+    <nav class="prototype-tabs" role="tablist" aria-label="Selecionar protótipo">
+      <button type="button" role="tab" id="tab-quadra" aria-controls="proto-quadra" aria-selected="true">01 · Linha de jogo</button>
+      <button type="button" role="tab" id="tab-festival" aria-controls="proto-festival" aria-selected="false" tabindex="-1">02 · Festival</button>
+      <button type="button" role="tab" id="tab-boletim" aria-controls="proto-boletim" aria-selected="false" tabindex="-1">03 · Boletim</button>
+    </nav>
+  </header>
+  <aside class="source-note"><strong>Base usada:</strong> interface de gestão de partidas, agenda e resultados de futsal. O navegador compartilhado contém uma busca pelo PDF FIFA 2024–25, não o documento; cronômetro, faltas e parâmetros regulamentares permanecem configuráveis e precisam ser validados com o regulamento da edição.</aside>
+
+  <main id="conteudo">
+    <section class="proto active" id="proto-quadra" role="tabpanel" aria-labelledby="tab-quadra" tabindex="0">
+      <div class="topline"><div class="wordmark">JIFC <span>/</span> QUADRA</div><div class="top-actions"><button class="outline-button refresh" type="button">Atualizar painel</button><button class="solid-button add-match" type="button">+ Nova partida</button></div></div>
+      <div class="board-layout">
+        <div>
+          <p class="eyebrow">terça-feira, 18 de agosto · etapa classificatória</p>
+          <h1 class="page-title">Operação do dia</h1>
+          <div class="filters"><label>Modalidade <select class="sport-filter" aria-label="Filtrar por modalidade"><option value="all">Todas</option><option value="futsal">Futsal</option><option value="basquete">Basquete</option><option value="vôlei">Vôlei</option><option value="tênis de mesa">Tênis de mesa</option></select></label><label>Buscar equipe <input class="team-search" type="search" placeholder="Nome da equipe" aria-label="Buscar equipe"></label></div>
+          <div class="stats" aria-label="Resumo da competição"><div class="stat"><strong>04</strong><span>Partidas de hoje</span></div><div class="stat"><strong>01</strong><span>Em andamento</span></div><div class="stat"><strong>02</strong><span>Próximas</span></div><div class="stat"><strong>01</strong><span>Aguardando validação</span></div></div>
+          <div class="section-heading"><h2>Agenda de quadra</h2><a href="#agenda-quadra">Ver calendário completo</a></div>
+          <div class="schedule" id="agenda-quadra" aria-label="Partidas do dia">
+            <article class="match-row" data-sport="futsal"><time class="match-time">09:30</time><div class="match-teams"><span>Engenharia</span><span class="versus">x</span><span>Informática</span></div><div class="sport-label"><span class="sport-dot"></span>Futsal · Quadra 1</div><span class="status live">Em andamento</span><button class="row-action edit-score" type="button" data-match="Engenharia x Informática">Lançar placar</button><span class="match-score" aria-label="Placar 2 a 1">2 – 1</span></article>
+            <article class="match-row" data-sport="basquete"><time class="match-time">10:15</time><div class="match-teams"><span>Administração</span><span class="versus">x</span><span>Ed. Física</span></div><div class="sport-label"><span class="sport-dot basket"></span>Basquete · Ginásio</div><span class="status">Agendada</span><button class="row-action edit-score" type="button" data-match="Administração x Ed. Física">Registrar resultado</button></article>
+            <article class="match-row" data-sport="vôlei"><time class="match-time">11:00</time><div class="match-teams"><span>Biologia</span><span class="versus">x</span><span>Química</span></div><div class="sport-label"><span class="sport-dot volley"></span>Vôlei · Quadra 2</div><span class="status pending">Aguardando validação</span><button class="row-action edit-score" type="button" data-match="Biologia x Química">Revisar resultado</button><span class="match-score" aria-label="Placar 2 sets a 0">2 – 0</span></article>
+            <article class="match-row" data-sport="tênis de mesa"><time class="match-time">11:40</time><div class="match-teams"><span>Design</span><span class="versus">x</span><span>Engenharia</span></div><div class="sport-label"><span class="sport-dot table"></span>Tênis de mesa · Mesa 3</div><span class="status">Agendada</span><button class="row-action edit-score" type="button" data-match="Design x Engenharia">Registrar resultado</button></article>
+          </div><p class="no-results">Nenhuma partida corresponde aos filtros.</p><div class="inline-notice" aria-live="polite"></div>
+        </div>
+        <aside>
+          <div class="section-heading"><h2>Precisa de atenção</h2><span class="eyebrow">2 itens</span></div>
+          <ul class="side-list"><li><span>Resultado aguardando validação<small>Vôlei · Biologia x Química</small></span><strong>11:00</strong></li><li><span>Súmula incompleta<small>Futsal · Quadra 1</small></span><strong>Ver</strong></li></ul>
+          <div class="section-heading"><h2>Quadras</h2><a href="#agenda-quadra">Ver todas</a></div>
+          <ul class="side-list"><li><span>Quadra 1<small>Futsal · jogo em andamento</small></span><span class="status live">Ocupada</span></li><li><span>Ginásio<small>Próximo: basquete</small></span><span class="status">Livre</span></li><li><span>Quadra 2<small>Vôlei · resultado pendente</small></span><span class="status pending">Revisão</span></li></ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="proto festival" id="proto-festival" role="tabpanel" aria-labelledby="tab-festival" tabindex="0" hidden>
+      <div class="topline"><div class="wordmark">JOGOS <span>·</span> JIFC</div><div class="top-actions"><button class="outline-button refresh" type="button">Sincronizar</button><button class="solid-button add-match" type="button">+ Adicionar evento</button></div></div>
+      <div class="intro"><div class="intro-copy"><p class="eyebrow">18 AGO · CAMPUS CENTRAL · ETAPA 02</p><h1 class="page-title">Hoje no campus</h1><p>Uma visão por local deixa cada equipe e operador a par do que acontece agora e do que vem a seguir.</p></div><div class="intro-image" role="img" aria-label="Atletas em uma quadra esportiva"></div></div>
+      <div class="festival-bar"><strong>AGORA · 09:30</strong><span>Futsal em andamento na Quadra 1 · Engenharia 2 x 1 Informática</span></div>
+      <div class="filters"><label>Modalidade <select class="sport-filter" aria-label="Filtrar por modalidade"><option value="all">Todas</option><option value="futsal">Futsal</option><option value="basquete">Basquete</option><option value="vôlei">Vôlei</option><option value="tênis de mesa">Tênis de mesa</option></select></label><label>Buscar equipe <input class="team-search" type="search" placeholder="Digite para filtrar" aria-label="Buscar equipe"></label></div>
+      <div class="stats"><div class="stat"><strong>12</strong><span>Eventos no dia</span></div><div class="stat"><strong>03</strong><span>Locais ativos</span></div><div class="stat"><strong>01</strong><span>Em andamento</span></div><div class="stat"><strong>02</strong><span>Resultados pendentes</span></div></div>
+      <div class="section-heading"><h2>Programação por local</h2><span class="eyebrow">horários locais</span></div>
+      <div class="venue-grid">
+        <section class="venue"><h3>Quadra 1 <span>3 eventos</span></h3><article class="festival-event" data-sport="futsal"><time>09:30 · FUTSAL</time><strong>Engenharia x Informática</strong><p>Etapa classificatória · em andamento</p><span class="status live">2 – 1 · Ao vivo</span><br><button class="edit-score" data-match="Engenharia x Informática" type="button">Abrir partida</button></article><article class="festival-event" data-sport="futsal"><time>12:20 · FUTSAL</time><strong>Administração x Design</strong><p>Etapa classificatória · próxima</p><span class="status">Agendada</span><br><button class="edit-score" data-match="Administração x Design" type="button">Ver detalhes</button></article></section>
+        <section class="venue"><h3>Ginásio <span>2 eventos</span></h3><article class="festival-event" data-sport="basquete"><time>10:15 · BASQUETE</time><strong>Administração x Ed. Física</strong><p>Etapa classificatória · jogo 04</p><span class="status">Agendada</span><br><button class="edit-score" data-match="Administração x Ed. Física" type="button">Ver detalhes</button></article><article class="festival-event" data-sport="vôlei"><time>11:00 · VÔLEI</time><strong>Biologia x Química</strong><p>Quadra auxiliar · resultado em revisão</p><span class="status pending">Aguardando validação</span><br><button class="edit-score" data-match="Biologia x Química" type="button">Revisar súmula</button></article></section>
+        <section class="venue"><h3>Mesas <span>2 eventos</span></h3><article class="festival-event" data-sport="tênis de mesa"><time>11:40 · TÊNIS DE MESA</time><strong>Design x Engenharia</strong><p>Mesa 3 · etapa classificatória</p><span class="status">Agendada</span><br><button class="edit-score" data-match="Design x Engenharia" type="button">Ver detalhes</button></article><article class="festival-event" data-sport="tênis de mesa"><time>12:10 · TÊNIS DE MESA</time><strong>Informática x Biologia</strong><p>Mesa 1 · etapa classificatória</p><span class="status">Agendada</span><br><button class="edit-score" data-match="Informática x Biologia" type="button">Ver detalhes</button></article></section>
+      </div><p class="no-results">Nenhum evento corresponde aos filtros.</p><div class="inline-notice" aria-live="polite"></div>
+    </section>
+
+    <section class="proto bulletin" id="proto-boletim" role="tabpanel" aria-labelledby="tab-boletim" tabindex="0" hidden>
+      <div class="topline"><div class="wordmark">JIFC <span>·</span> BOLETIM</div><div class="top-actions"><button class="outline-button refresh" type="button">Atualizar resultados</button><button class="solid-button add-match" type="button">+ Lançar resultado</button></div></div>
+      <div class="masthead"><div><p class="eyebrow">JOGOS INTERCLASSES · EDIÇÃO 2026</p><h1>Uma rodada em movimento.</h1><p>Acompanhe os resultados validados e a programação desta terça. Dados de partida publicados após revisão da arbitragem.</p></div><div class="mast-image" role="img" aria-label="Campo esportivo preparado para uma partida"></div></div>
+      <div class="bulletin-strip"><strong>TER · 18 AGO</strong><span>Etapa classificatória</span><span>·</span><span>Campus Central</span></div>
+      <div class="board-layout"><div>
+        <div class="stats"><div class="stat"><strong>08</strong><span>Resultados publicados</span></div><div class="stat"><strong>03</strong><span>Modalidades hoje</span></div><div class="stat"><strong>01</strong><span>Partida ao vivo</span></div></div>
+        <div class="filters"><label>Modalidade <select class="sport-filter" aria-label="Filtrar por modalidade"><option value="all">Todas</option><option value="futsal">Futsal</option><option value="basquete">Basquete</option><option value="vôlei">Vôlei</option><option value="tênis de mesa">Tênis de mesa</option></select></label><label>Buscar equipe <input class="team-search" type="search" placeholder="Equipe" aria-label="Buscar equipe"></label></div>
+        <div class="section-heading"><h2>Resultados e próximos jogos</h2><a href="#resultados">Ver tabela</a></div>
+        <div class="schedule" id="resultados"><article class="match-row" data-sport="futsal"><time class="match-time">09:30</time><div class="match-teams"><span>Engenharia</span><span class="versus">x</span><span>Informática</span></div><span class="match-score" aria-label="Placar 2 a 1">2–1</span><span class="status live">Ao vivo</span><button class="row-action edit-score" type="button" data-match="Engenharia x Informática">Detalhes</button><span class="sport-label"><span class="sport-dot"></span>Futsal · Quadra 1</span></article>
+          <article class="match-row" data-sport="vôlei"><time class="match-time">08:45</time><div class="match-teams"><span>Química</span><span class="versus">x</span><span>Administração</span></div><span class="match-score" aria-label="Placar 2 sets a 1">2–1</span><span class="status">Resultado validado</span><button class="row-action edit-score" type="button" data-match="Química x Administração">Súmula</button><span class="sport-label"><span class="sport-dot volley"></span>Vôlei · Quadra 2</span></article>
+          <article class="match-row" data-sport="basquete"><time class="match-time">08:00</time><div class="match-teams"><span>Ed. Física</span><span class="versus">x</span><span>Biologia</span></div><span class="match-score" aria-label="Placar 31 a 28">31–28</span><span class="status">Resultado validado</span><button class="row-action edit-score" type="button" data-match="Ed. Física x Biologia">Súmula</button><span class="sport-label"><span class="sport-dot basket"></span>Basquete · Ginásio</span></article>
+        </div><p class="no-results">Nenhuma partida corresponde aos filtros.</p><div class="inline-notice" aria-live="polite"></div>
+      </div><aside><div class="section-heading"><h2>Classificação geral</h2><a href="#classificacao">Completa</a></div><ul class="side-list" id="classificacao"><li><span><span class="rank">01</span> Engenharia<small>2 ouros · 4 resultados</small></span><strong>18 pts</strong></li><li><span><span class="rank">02</span> Ed. Física<small>1 ouro · 3 resultados</small></span><strong>14 pts</strong></li><li><span><span class="rank">03</span> Administração<small>1 ouro · 3 resultados</small></span><strong>11 pts</strong></li><li><span><span class="rank">04</span> Informática<small>2 pódios · 2 resultados</small></span><strong>09 pts</strong></li></ul><div class="section-heading"><h2>Próxima transmissão</h2></div><p style="font-size:12px;line-height:1.6;color:var(--muted)">Basquete · Ginásio<br>Administração x Ed. Física<br>Hoje, às 10:15</p></aside></div>
+    </section>
+  </main>
+  <footer>Protótipo para discussão de produto · Dados fictícios · Regras e pontuação geral devem ser configuradas pela organização da edição.</footer>
+
+  <dialog id="score-dialog" aria-labelledby="dialog-title"><form method="dialog" id="score-form"><h2 id="dialog-title">Registrar placar</h2><p id="dialog-match">Partida</p><div class="score-fields"><label id="label-home">Equipe da casa<input name="homeScore" type="number" min="0" max="999" value="0" required></label><label id="label-away">Equipe visitante<input name="awayScore" type="number" min="0" max="999" value="0" required></label></div><div class="dialog-actions"><button class="outline-button" value="cancel">Cancelar</button><button class="solid-button" id="save-score" value="save">Salvar rascunho</button></div></form></dialog>
+  <script>
+    const tabs = [...document.querySelectorAll('[role="tab"]')];
+    const panels = [...document.querySelectorAll('[role="tabpanel"]')];
+    let activeTab = 0;
+
+    function selectTab(index, focus = false) {
+      activeTab = (index + tabs.length) % tabs.length;
+      tabs.forEach((tab, i) => {
+        const selected = i === activeTab;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        panels[i].hidden = !selected;
+        panels[i].classList.toggle('active', selected);
+      });
+      if (focus) tabs[activeTab].focus();
+    }
+
+    tabs.forEach((tab, index) => tab.addEventListener('click', () => selectTab(index)));
+    document.querySelector('.prototype-tabs').addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight') { event.preventDefault(); selectTab(activeTab + 1, true); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); selectTab(activeTab - 1, true); }
+      if (event.key === 'Home') { event.preventDefault(); selectTab(0, true); }
+      if (event.key === 'End') { event.preventDefault(); selectTab(tabs.length - 1, true); }
+    });
+
+    function filterPanel(panel) {
+      const sport = panel.querySelector('.sport-filter')?.value || 'all';
+      const query = panel.querySelector('.team-search')?.value.trim().toLocaleLowerCase('pt-BR') || '';
+      const rows = [...panel.querySelectorAll('[data-sport]')];
+      let visible = 0;
+      rows.forEach(row => {
+        const matchesSport = sport === 'all' || row.dataset.sport === sport;
+        const matchesText = !query || row.textContent.toLocaleLowerCase('pt-BR').includes(query);
+        row.hidden = !(matchesSport && matchesText);
+        if (!row.hidden) visible++;
+      });
+      panel.querySelectorAll('.no-results').forEach(message => message.classList.toggle('show', visible === 0));
+    }
+
+    panels.forEach(panel => {
+      panel.querySelector('.sport-filter')?.addEventListener('change', () => filterPanel(panel));
+      panel.querySelector('.team-search')?.addEventListener('input', () => filterPanel(panel));
+      panel.querySelectorAll('.refresh').forEach(button => button.addEventListener('click', () => {
+        const note = panel.querySelector('.inline-notice');
+        note.textContent = 'Painel atualizado agora.';
+        window.setTimeout(() => { note.textContent = ''; }, 3500);
+      }));
+      panel.querySelectorAll('.add-match').forEach(button => button.addEventListener('click', () => {
+        const note = panel.querySelector('.inline-notice');
+        note.textContent = 'A criação de partidas será definida no fluxo de organização.';
+      }));
+    });
+
+    const dialog = document.querySelector('#score-dialog');
+    const matchLabel = document.querySelector('#dialog-match');
+    const homeField = document.querySelector('[name="homeScore"]');
+    const awayField = document.querySelector('[name="awayScore"]');
+    let currentTrigger;
+    let currentScoreNode;
+    document.querySelectorAll('.edit-score').forEach(button => button.addEventListener('click', () => {
+      currentTrigger = button;
+      const row = button.closest('.match-row, .festival-event');
+      currentScoreNode = row?.querySelector('.match-score, .status.live');
+      matchLabel.textContent = button.dataset.match || 'Partida';
+      const score = currentScoreNode?.textContent.match(/(\d+)\s*[–-]\s*(\d+)/);
+      homeField.value = score?.[1] || 0;
+      awayField.value = score?.[2] || 0;
+      document.querySelector('#score-form').dataset.saved = 'false';
+      dialog.showModal();
+      homeField.focus();
+    }));
+    document.querySelector('#score-form').addEventListener('submit', event => {
+      if (event.submitter?.value !== 'save') return;
+      event.preventDefault();
+      if (currentScoreNode) {
+        currentScoreNode.textContent = `${homeField.value} – ${awayField.value}`;
+        currentScoreNode.setAttribute('aria-label', `Placar ${homeField.value} a ${awayField.value}`);
+      }
+      const panel = currentTrigger.closest('.proto');
+      const note = panel.querySelector('.inline-notice');
+      note.textContent = `Rascunho de placar salvo para ${matchLabel.textContent}. Ainda não publicado.`;
+      dialog.close();
+      currentTrigger.focus();
+    });
+    dialog.addEventListener('close', () => { if (currentTrigger?.isConnected) currentTrigger.focus(); });
+  </script>
+</body>
+</html>
